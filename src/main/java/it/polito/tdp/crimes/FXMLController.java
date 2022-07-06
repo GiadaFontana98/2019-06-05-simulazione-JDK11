@@ -5,9 +5,12 @@
 package it.polito.tdp.crimes;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.crimes.model.Adiacenza;
 import it.polito.tdp.crimes.model.Model;
+import it.polito.tdp.crimes.model.Vicini;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,13 +28,13 @@ public class FXMLController {
     private URL location;
 
     @FXML // fx:id="boxAnno"
-    private ComboBox<?> boxAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxMese"
-    private ComboBox<?> boxMese; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxGiorno"
-    private ComboBox<?> boxGiorno; // Value injected by FXMLLoader
+    private ComboBox<Integer> boxGiorno; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCreaReteCittadina"
     private Button btnCreaReteCittadina; // Value injected by FXMLLoader
@@ -47,7 +50,28 @@ public class FXMLController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
-
+    	txtResult.clear();
+    	
+    	Integer msg = this.boxAnno.getValue();
+    	if(msg!=null) {
+    	txtResult.appendText(model.creaGrafo(msg));
+    	this.boxGiorno.setDisable(false);
+    	this.boxMese.setDisable(false);
+    	}
+    	else
+    	{
+    		txtResult.appendText("Ciao");
+    	}
+    	
+    	for(Adiacenza a : model.getVertici(msg))
+    		
+    	{
+    		for(Vicini v : model.getVicini(a))
+    				{
+    			txtResult.appendText("\n"+ a + v);
+    				}
+    	
+    	}
     }
 
     @FXML
@@ -69,5 +93,12 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	this.boxAnno.getItems().addAll(model.getAnni());
+    	this.boxGiorno.getItems().addAll(model.getGiorno());
+    	this.boxMese.getItems().addAll(model.getMesi());
+    	this.boxGiorno.setDisable(true);
+    	this.boxMese.setDisable(true);
     }
+    
 }
